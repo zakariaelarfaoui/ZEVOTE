@@ -88,7 +88,7 @@ const updateElection = asyncWrapper(async (req, res, next) => {
   const checkDuplicateName = await CheckDuplicateField(
     "title",
     req.body.title,
-    Election,
+    Election
   );
   if (checkDuplicateName)
     return next(newError("Election with this title already exists", 400));
@@ -99,8 +99,27 @@ const updateElection = asyncWrapper(async (req, res, next) => {
   if (!election) return next(newError("Election not found", 404));
   res.status(200).json({
     error: false,
-    data: election,
+    message: "Election updated successfully",
   });
 });
 
-export { addElection, getAllElections, getElectionById, updateElection };
+const deleteElection = asyncWrapper(async (req, res, next) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return next(newError("Invalid data", 422));
+
+  const election = await Election.findByIdAndDelete(id);
+  if (!election) return next(newError("Election not found", 404));
+  res.status(200).json({
+    error: false,
+    message: "Election deleted successfully",
+  });
+});
+
+export {
+  addElection,
+  getAllElections,
+  getElectionById,
+  updateElection,
+  deleteElection,
+};
