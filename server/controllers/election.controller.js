@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import CheckDuplicateField from "../helpers/checkDuplicateField.js";
 import newError from "../helpers/customError.js";
 import asyncWrapper from "../middleware/asyncWrapper.js";
@@ -63,4 +64,17 @@ const getAllElections = asyncWrapper(async (req, res, next) => {
   });
 });
 
-export { addElection, getAllElections };
+const getElectionById = asyncWrapper(async (req, res, next) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return next(newError("Invalid data", 422));
+
+  const election = await Election.findById(id);
+  if (!election) return next(newError("Election not found", 404));
+  res.status(200).json({
+    error: false,
+    data: election,
+  });
+});
+
+export { addElection, getAllElections, getElectionById };
