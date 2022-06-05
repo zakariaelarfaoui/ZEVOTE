@@ -77,4 +77,30 @@ const getElectionById = asyncWrapper(async (req, res, next) => {
   });
 });
 
-export { addElection, getAllElections, getElectionById };
+const updateElection = asyncWrapper(async (req, res, next) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return next(newError("Invalid data", 422));
+
+  const result = electionValidation(req.body);
+  if (result.error) return next(newError(result.error.message, 400));
+
+  const checkDuplicateName = await CheckDuplicateField(
+    "title",
+    req.body.title,
+    Election,
+  );
+  if (checkDuplicateName)
+    return next(newError("Election with this title already exists", 400));
+
+  const election = await Election.findByIdAndUpdate(id, result.value, {
+    new: true,
+  });
+  if (!election) return next(newError("Election not found", 404));
+  res.status(200).json({
+    error: false,
+    data: election,
+  });
+});
+
+export { addElection, getAllElections, getElectionById, updateElection };
