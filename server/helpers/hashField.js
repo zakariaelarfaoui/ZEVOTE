@@ -6,4 +6,9 @@ const hashField = async (value) => {
   return hashedField;
 };
 
+export const compareHash = async (value, hashedField) => {
+  const validPassword = await bcrypt.compare(value, hashedField);
+  return validPassword;
+}
+
 export default hashField;
