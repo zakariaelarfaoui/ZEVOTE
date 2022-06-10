@@ -2,23 +2,18 @@ import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema(
   {
-    firstName: { type: String, required: true, min: 3 },
-    lastName: { type: String, required: true, min: 3 },
-    email: { type: String, required: true, unique: true },
+    name: { type: String, required: true, minLength: 6 },
+    email: { type: String, required: true, minLength: 6 },
+    password: { type: String, required: true, minLength: 6 },
     role: {
       type: String,
-      enum: ["admin", "candidate", "voter"],
       default: "voter",
+      enum: ["admin", "candidate", "voter", "manager"],
     },
-    password: { type: String, required: true, min: 8 },
     active: { type: Boolean, default: false },
-    refreshToken: { type: String, default: null },
   },
   {
-    timestamps: {
-      createdAt: "createdAt",
-      updatedAt: "updatedAt",
-    },
+    timestamps: true,
   }
 );
 const User = mongoose.model("user", userSchema);
