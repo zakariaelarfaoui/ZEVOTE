@@ -2,15 +2,14 @@ import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema(
   {
-    name: { type: String, required: true, minLength: 6 },
-    email: { type: String, required: true, minLength: 6 },
+    name: { type: String, required: true },
+    email: { type: String, required: true },
     password: { type: String, required: true, minLength: 6 },
     role: {
       type: String,
-      default: "voter",
-      enum: ["admin", "candidate", "voter", "manager"],
+      default: "manager",
+      enum: ["voter", "manager"],
     },
-    active: { type: Boolean, default: false },
   },
   {
     timestamps: true,
